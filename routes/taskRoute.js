@@ -4,7 +4,7 @@ import { createTask, deleteTask, getTasks, updateTask, updateTaskStatus } from "
 const router = express.Router();
 
 router.post("/create", createTask);
-router.get("/tasks", getTasks);
+router.get("/all", getTasks);
 router.delete("/:id", deleteTask);
 router.put("/:id", updateTask);
 router.put("/status/:id", updateTaskStatus);

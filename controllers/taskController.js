@@ -19,7 +19,7 @@ export const createTask = async (req, res) => {
 
 export const getTasks = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status } = req.query;
 
     const ongoingTasks = await Task.findAll({ where: { status } });
 
