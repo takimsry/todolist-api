@@ -56,7 +56,7 @@ export const deleteTask = async (req, res) => {
 export const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title } = req.body;
+    const { title, deadline } = req.body;
 
     let task = await Task.findByPk(id);
     if (!task) {
@@ -64,6 +64,7 @@ export const updateTask = async (req, res) => {
     }
 
     task.title = title || task.title;
+    task.deadline = deadline || task.deadline;
     task = await task.save();
 
     res.status(200).json(task);
