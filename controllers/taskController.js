@@ -21,11 +21,11 @@ export const getTasks = async (req, res) => {
   try {
     const { status } = req.query;
 
-    const ongoingTasks = await Task.findAll({ where: { status } });
+    const tasks = await Task.findAll({ where: { status } });
 
-    res.status(200).json(ongoingTasks);
+    res.status(200).json(tasks);
   } catch (error) {
-    console.log("Error in getOngoingTasks controller", error);
+    console.log("Error in getTasks controller", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
