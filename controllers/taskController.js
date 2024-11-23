@@ -1,3 +1,4 @@
+import Subtask from "../models/subtaskModel.js";
 import Task from "../models/taskModel.js";
 
 export const createTask = async (req, res) => {
@@ -8,9 +9,10 @@ export const createTask = async (req, res) => {
       return res.status(400).json({ error: 'Title is required' });
     }
 
-    const newTask = await Task.create({ title });
-
-    res.status(201).json(newTask);
+    const task = await Task.create({ title });
+    
+    const formattedTask = { ...task.dataValues, Subtasks: [], progressPercentage: 0 };
+    res.status(201).json(formattedTask);
   } catch (error) {
     console.log("Error in createTask controller", error);
     res.status(500).json({ error: "Internal server error" });
@@ -21,9 +23,29 @@ export const getTasks = async (req, res) => {
   try {
     const { status } = req.query;
 
-    const tasks = await Task.findAll({ where: { status } });
+    const tasks = await Task.findAll({
+      include: { model: Subtask },
+      where: { status }
+    });
 
-    res.status(200).json(tasks);
+    const formattedTasks = tasks.map(task => {
+      let progressPercentage = 0;
+
+      if (task.status) {
+        progressPercentage = 100;
+      } else {
+        const subtasksUnderTask = task.Subtasks;
+        const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
+        progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
+      }
+      
+      return {
+        ...task.dataValues,
+        progressPercentage: progressPercentage || 0
+      }
+    });
+
+    res.status(200).json(formattedTasks);
   } catch (error) {
     console.log("Error in getTasks controller", error);
     res.status(500).json({ error: "Internal server error" });
@@ -62,9 +84,19 @@ export const updateTask = async (req, res) => {
     task.deadline = deadline || task.deadline;
     task = await task.save();
 
-    res.status(200).json(task);
+    const subtasksUnderTask = await Subtask.findAll({ where: { task_id: id } });
+    let progressPercentage = 0;
+    if (task.status) {
+      progressPercentage = 100;
+    } else {
+      const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
+      progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
+    }
+
+    const formattedTask = { ...task.dataValues, Subtasks: subtasksUnderTask || [], progressPercentage: progressPercentage || 0 };
+    res.status(200).json(formattedTask);
   } catch (error) {
-    console.log("Error in updateTaskTitle controller", error);
+    console.log("Error in updateTask controller", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
@@ -85,7 +117,24 @@ export const updateTaskStatus = async (req, res) => {
     }
     
     task = await task.save();
-    res.status(200).json(task);
+
+    if (task.status) {
+      await Subtask.update({ status: true }, { where: { task_id: id } });
+    } else {
+      await Subtask.update({ status: false }, { where: { task_id: id } });
+    }
+
+    const subtasksUnderTask = await Subtask.findAll({ where: { task_id: id } });
+    let progressPercentage = 0;
+    if (task.status) {
+      progressPercentage = 100;
+    } else {
+      const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
+      progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
+    }
+
+    const formattedTask = { ...task.dataValues, Subtasks: subtasksUnderTask || [], progressPercentage: progressPercentage || 0 };
+    res.status(200).json(formattedTask);
   } catch (error) {
     console.log("Error in updateTaskStatus controller", error);
     res.status(500).json({ error: "Internal server error" });
