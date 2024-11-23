@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "5ee94b40-8008-43b4-83da-d02c9190c7ac",
+		"name": "Todolist",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24891262"
+	},
+	"item": [
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Balap motor\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/tasks",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/tasks/all?status=false",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"all"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/tasks/583f786a-78af-43ab-bbf1-3a9bfa071e38",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"583f786a-78af-43ab-bbf1-3a9bfa071e38"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Gosok muka\",\r\n    \"deadline\": \"2024-12-31T23:59:59\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/tasks/cb25a8d2-6dfa-4676-ae77-d2ad5eb5f1c6",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"cb25a8d2-6dfa-4676-ae77-d2ad5eb5f1c6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task Status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/tasks/status/cb25a8d2-6dfa-4676-ae77-d2ad5eb5f1c6",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"status",
+								"cb25a8d2-6dfa-4676-ae77-d2ad5eb5f1c6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subtask",
+			"item": [
+				{
+					"name": "Create Subtask",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Make sepatu\",\r\n    \"task_id\": \"cb25a8d2-6dfa-4676-ae77-d2ad5eb5f1c6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/subtasks",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"subtasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Subtasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/subtasks/cb25a8d2-6dfa-4676-ae77-d2ad5eb5f1c6",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"subtasks",
+								"cb25a8d2-6dfa-4676-ae77-d2ad5eb5f1c6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/subtasks/d2f530ea-9d33-4985-992d-466e6c318a62",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"subtasks",
+								"d2f530ea-9d33-4985-992d-466e6c318a62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subtask",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Beli kelapa sawit\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/subtasks/d5b0e4c2-3124-4fab-90a1-599a0d764a7a",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"subtasks",
+								"d5b0e4c2-3124-4fab-90a1-599a0d764a7a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subtask Status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/subtasks/status/d5b0e4c2-3124-4fab-90a1-599a0d764a7a",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"subtasks",
+								"status",
+								"d5b0e4c2-3124-4fab-90a1-599a0d764a7a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
