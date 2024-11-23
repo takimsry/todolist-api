@@ -1,4 +1,5 @@
 import Subtask from "../models/subtaskModel.js";
+import Task from "../models/taskModel.js";
 
 export const createSubtask = async (req, res) => {
   try {
@@ -75,6 +76,17 @@ export const updateSubtaskStatus = async (req, res) => {
     }
     
     subtask = await subtask.save();
+
+    const taskId = subtask.task_id;
+    const subtasksUnderTask = await Subtask.findAll({ where: { task_id: taskId } });
+    const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
+
+    if(subtasksUnderTask.length === completedSubtasks.length) {
+      await Task.update({ status: true }, { where: { id: taskId } });
+    } else {
+      await Task.update({ status: false }, { where: { id: taskId } });
+    }
+
     res.status(200).json(subtask);
   } catch (error) {
     console.log("Error in updateSubtaskStatus controller", error);
