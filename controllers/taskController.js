@@ -23,11 +23,6 @@ export const getTasks = async (req, res) => {
 
     const ongoingTasks = await Task.findAll({ where: { status } });
 
-    // check if we really need this
-    if (ongoingTasks.length === 0) {
-      return res.status(404).json([]);
-    }
-
     res.status(200).json(ongoingTasks);
   } catch (error) {
     console.log("Error in getOngoingTasks controller", error);
