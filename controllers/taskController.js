@@ -25,7 +25,8 @@ export const getTasks = async (req, res) => {
 
     const tasks = await Task.findAll({
       include: { model: Subtask },
-      where: { status }
+      where: { status },
+      order: [['deadline', 'ASC'], ['updatedAt', 'ASC']]
     });
 
     const formattedTasks = tasks.map(task => {

@@ -93,16 +93,3 @@ export const updateSubtaskStatus = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 }
-
-export const getSubtasksByTaskId = async (req, res) => {
-  try {
-    const { taskId } = req.params;
-
-    const subtasks = await Subtask.findAll({ where: { task_id: taskId } });
-
-    res.status(200).json(subtasks);
-  } catch (error) {
-    console.log("Error in getSubtasks controller", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-}
