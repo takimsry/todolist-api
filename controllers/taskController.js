@@ -10,9 +10,8 @@ export const createTask = async (req, res) => {
     }
 
     const task = await Task.create({ title });
-    const progressPercentage = 0;
     
-    const formattedTask = { ...task.dataValues, progressPercentage };
+    const formattedTask = { ...task.dataValues, Subtasks: [], progressPercentage: 0 };
     res.status(201).json(formattedTask);
   } catch (error) {
     console.log("Error in createTask controller", error);
@@ -85,18 +84,16 @@ export const updateTask = async (req, res) => {
     task.deadline = deadline || task.deadline;
     task = await task.save();
 
-    
+    const subtasksUnderTask = await Subtask.findAll({ where: { task_id: id } });
     let progressPercentage = 0;
-    
     if (task.status) {
       progressPercentage = 100;
     } else {
-      const subtasksUnderTask = await Subtask.findAll({ where: { task_id: id } });
       const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
       progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
     }
 
-    const formattedTask = { ...task.dataValues, progressPercentage: progressPercentage || 0 };
+    const formattedTask = { ...task.dataValues, Subtasks: subtasksUnderTask || [], progressPercentage: progressPercentage || 0 };
     res.status(200).json(formattedTask);
   } catch (error) {
     console.log("Error in updateTask controller", error);
@@ -121,17 +118,16 @@ export const updateTaskStatus = async (req, res) => {
     
     task = await task.save();
 
+    const subtasksUnderTask = await Subtask.findAll({ where: { task_id: id } });
     let progressPercentage = 0;
-
     if (task.status) {
       progressPercentage = 100;
     } else {
-      const subtasksUnderTask = task.Subtasks;
       const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
       progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
     }
 
-    const formattedTask = { ...task.dataValues, progressPercentage: progressPercentage || 0 };
+    const formattedTask = { ...task.dataValues, Subtasks: subtasksUnderTask || [], progressPercentage: progressPercentage || 0 };
     res.status(200).json(formattedTask);
   } catch (error) {
     console.log("Error in updateTaskStatus controller", error);
