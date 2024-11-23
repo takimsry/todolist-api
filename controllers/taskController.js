@@ -12,7 +12,8 @@ export const createTask = async (req, res) => {
     const task = await Task.create({ title });
     const progressPercentage = 0;
     
-    res.status(201).json({ ...task.dataValues, progressPercentage });
+    const formattedTask = { ...task.dataValues, progressPercentage };
+    res.status(201).json(formattedTask);
   } catch (error) {
     console.log("Error in createTask controller", error);
     res.status(500).json({ error: "Internal server error" });
@@ -95,7 +96,8 @@ export const updateTask = async (req, res) => {
       progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
     }
 
-    res.status(200).json({ ...task.dataValues, progressPercentage: progressPercentage || 0 });
+    const formattedTask = { ...task.dataValues, progressPercentage: progressPercentage || 0 };
+    res.status(200).json(formattedTask);
   } catch (error) {
     console.log("Error in updateTask controller", error);
     res.status(500).json({ error: "Internal server error" });
@@ -129,7 +131,8 @@ export const updateTaskStatus = async (req, res) => {
       progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
     }
 
-    res.status(200).json({ ...task.dataValues, progressPercentage: progressPercentage || 0 });
+    const formattedTask = { ...task.dataValues, progressPercentage: progressPercentage || 0 };
+    res.status(200).json(formattedTask);
   } catch (error) {
     console.log("Error in updateTaskStatus controller", error);
     res.status(500).json({ error: "Internal server error" });
