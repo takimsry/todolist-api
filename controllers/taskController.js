@@ -9,9 +9,10 @@ export const createTask = async (req, res) => {
       return res.status(400).json({ error: 'Title is required' });
     }
 
-    const newTask = await Task.create({ title });
-
-    res.status(201).json(newTask);
+    const task = await Task.create({ title });
+    const progressPercentage = 0;
+    
+    res.status(201).json({ ...task.dataValues, progressPercentage });
   } catch (error) {
     console.log("Error in createTask controller", error);
     res.status(500).json({ error: "Internal server error" });
@@ -83,9 +84,20 @@ export const updateTask = async (req, res) => {
     task.deadline = deadline || task.deadline;
     task = await task.save();
 
-    res.status(200).json(task);
+    
+    let progressPercentage = 0;
+    
+    if (task.status) {
+      progressPercentage = 100;
+    } else {
+      const subtasksUnderTask = await Subtask.findAll({ where: { task_id: id } });
+      const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
+      progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
+    }
+
+    res.status(200).json({ ...task.dataValues, progressPercentage: progressPercentage || 0 });
   } catch (error) {
-    console.log("Error in updateTaskTitle controller", error);
+    console.log("Error in updateTask controller", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
@@ -106,7 +118,18 @@ export const updateTaskStatus = async (req, res) => {
     }
     
     task = await task.save();
-    res.status(200).json(task);
+
+    let progressPercentage = 0;
+
+    if (task.status) {
+      progressPercentage = 100;
+    } else {
+      const subtasksUnderTask = task.Subtasks;
+      const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
+      progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
+    }
+
+    res.status(200).json({ ...task.dataValues, progressPercentage: progressPercentage || 0 });
   } catch (error) {
     console.log("Error in updateTaskStatus controller", error);
     res.status(500).json({ error: "Internal server error" });
