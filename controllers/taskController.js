@@ -118,6 +118,12 @@ export const updateTaskStatus = async (req, res) => {
     
     task = await task.save();
 
+    if (task.status) {
+      await Subtask.update({ status: true }, { where: { task_id: id } });
+    } else {
+      await Subtask.update({ status: false }, { where: { task_id: id } });
+    }
+
     const subtasksUnderTask = await Subtask.findAll({ where: { task_id: id } });
     let progressPercentage = 0;
     if (task.status) {
