@@ -1,3 +1,4 @@
+import Subtask from "../models/subtaskModel.js";
 import Task from "../models/taskModel.js";
 
 export const createTask = async (req, res) => {
@@ -21,9 +22,29 @@ export const getTasks = async (req, res) => {
   try {
     const { status } = req.query;
 
-    const tasks = await Task.findAll({ where: { status } });
+    const tasks = await Task.findAll({
+      include: { model: Subtask },
+      where: { status }
+    });
 
-    res.status(200).json(tasks);
+    const formattedTasks = tasks.map(task => {
+      let progressPercentage = 0;
+
+      if (task.status) {
+        progressPercentage = 100;
+      } else {
+        const subtasksUnderTask = task.Subtasks;
+        const completedSubtasks = subtasksUnderTask.filter(subtask => subtask.status === true);
+        progressPercentage = Math.round((completedSubtasks.length / subtasksUnderTask.length) * 100);
+      }
+      
+      return {
+        ...task.dataValues,
+        progressPercentage: progressPercentage || 0
+      }
+    });
+
+    res.status(200).json(formattedTasks);
   } catch (error) {
     console.log("Error in getTasks controller", error);
     res.status(500).json({ error: "Internal server error" });
